@@ -11,6 +11,8 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     filename='bot.log'
                     )
 
+methods = {'mercury': ephem.Mercury, 'venus': ephem.Venus, 'mars': ephem.Mars, 'jupiter': ephem.Jupiter, 'saturn': ephem.Saturn, 'uranus': ephem.Uranus, 'neptune': ephem.Neptune, 'pluto': ephem.Pluto}
+
 def main():
     mybot = Updater ("869248774:AAHJFrBOmMfQB0ZNkZ5pm-KPTZlqmumBQa8", request_kwargs=PROXY )
 
@@ -18,7 +20,7 @@ def main():
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
-    # dp.add_handler(CommandHandler("planet", "planet_name", say_constellation ))
+    dp.add_handler(CommandHandler("planet", say_constellation ))
 
     mybot.start_polling()
     mybot.idle()
@@ -34,9 +36,15 @@ def talk_to_me(bot, update):
     print(user_text)
     update.message.reply_text(user_text)
 
-#def say_constellation(bot, update):
- #   user_text = update.message.text.split()
-  #  if ephem.constellation
-   #     update.message.reply_text(ephem.constellation(user_text))
+def say_constellation(bot, update):
+    user_text = update.message.text.split()
+    planet = user_text[1]
+    logging.info(f'выбрана планета {planet}')
+    if planet in methods:
+        planet_today = methods[planet]('10/05/05')
+        update.message.reply_text(ephem.constellation(planet_today))
+    else:
+        update.message.reply_text('Нет такой планеты')
+
 
 main()
