@@ -1,4 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from datetime import date, datetime
 
 import ephem
 import logging
@@ -39,9 +40,9 @@ def talk_to_me(bot, update):
 def say_constellation(bot, update):
     user_text = update.message.text.split()
     planet = user_text[1]
-    logging.info(f'выбрана планета {planet}')
+    dt = datetime.now().strftime('%Y/%m/%d')
     if planet in methods:
-        planet_today = methods[planet]('10/05/05')
+        planet_today = methods[planet](dt)
         update.message.reply_text(ephem.constellation(planet_today))
     else:
         update.message.reply_text('Нет такой планеты')
